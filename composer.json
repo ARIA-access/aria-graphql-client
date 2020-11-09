@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ARIA\\graphql-client\\": "classes/"
+            "ARIA\\GraphQLClient\\": "classes/"
         }
     },
     "minimum-stability": "dev",
