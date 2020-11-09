@@ -1,6 +1,6 @@
 <?php
 
-use ARIA\graphql-client\APIDefinition;
+use ARIA\GraphQLClient\APIDefinition;
 
 class TestDefinition extends APIDefinition 
 {
@@ -9,13 +9,7 @@ class TestDefinition extends APIDefinition
     
     $client = $this->getClient();
     
-    $client->call([
-        'query' => [
-            'documentItems' => [
-                'id'
-            ]
-        ]
-    ])
+    return $client->call('query { documentItems { id } }');
     
   }
   
