@@ -12,7 +12,7 @@ class SiteAPI extends APIDefinition {
    * 
    * @param string $site_id UUID of the site
    */
-  public function isAdministrator( string $site_id, string $username ) : bool {
+  public function isAdministrator( string $site_id ) : bool {
 
     $mutation = <<< END
     mutation {
