@@ -41,6 +41,15 @@ class Client
     $this->endpoint = $endpoint;
     
   }
+
+  /**
+   * Retrieve the currently defined endpoint.
+   */
+  public function getEndpoint() : string {
+
+    return $this->endpoint;
+
+  }
   
   /**
    * Execute a GraphQL Call.
@@ -48,9 +57,9 @@ class Client
    * @param string $query The graphql query
    * @param string $mutations Optional mutations
    * @param string $variables Optional variables
-   * @returns array
+   * @return array
    */
-  public function call(string $query, string $mutations = '', string $variables = '') : ? array {
+  public function call(string $query, string $mutations = '', string $variables = '', string $method = 'GET') : ? array {
     
     $client = new http();
     
@@ -61,7 +70,7 @@ class Client
       $headers['Authorization'] = 'Bearer ' . $this->token;
     }
       
-    $response = $client->request('GET', $this->endpoint, [
+    $response = $client->request($method, $this->endpoint, [
       'headers' => $headers,
       'form_params' => [
           'query' => $query,
