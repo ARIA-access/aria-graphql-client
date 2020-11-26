@@ -8,25 +8,30 @@ use ARIA\GraphQLClient\CallException;
 class SiteAPI extends APIDefinition {
 
   /**
-   * Is the currently authenticated user a site administrator for the site.
+   * Is the user a site administrator for the site
    * 
    * @param string $site_id UUID of the site
+   * @param string $username username of the user 
    */
-  public function isAdministrator( string $site_id ) : bool {
+  public function isAdministrator( string $site_id , string $username) : bool {
 
-    $mutation = <<< END
-    mutation {
-      isAdministrator(input:{
-        site_id: "$site_id"
-      })
-    }
+    $query = <<< END
+      query {
+          isAdministratorItems(filters: {
+          site_id: "$site_id",
+          username: "$username"
+        })
+        {
+          is_admin
+        }
+      }
     END;
 
-    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
 
     if (!empty($result['data'])) {
 
-        if ( $result['data']['isAdministrator'] === true ) {
+        if ( $result['data']['isAdministratorItems'][0]['is_admin'] === true ) {
             return true;
         }
         
