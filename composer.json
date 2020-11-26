@@ -8,6 +8,10 @@
         {
             "name": "Marcus Povey",
             "email": "marcus@instruct-eric.eu"
+        },
+        {
+            "name": "Fiona Sanderson",
+            "email": "fiona@instruct-eric.eu"
         }
     ],
     "require-dev": {
