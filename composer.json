@@ -1,7 +1,7 @@
 {
     "name": "aria-php/aria-graphql-client",
     "description": "ARIA GraphQL library",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "type": "library",
     "license": "LGPL-3.0-or-later",
     "authors": [
@@ -25,7 +25,9 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "guzzlehttp/guzzle": "^7.0",
-        "symfony/cache": "^4.4"
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "suggest": {
+        "symfony/cache": "For cached queries"
     }
 }
