@@ -1,11 +1,14 @@
 <?php
 
 namespace ARIA\GraphQLClient\API;
+
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
+use ARIA\GraphQLClient\JSONEncodedGQL;
 
-class UserAPI extends APIDefinition {
+class UserAPI extends APIDefinition
+{
 
   /**
    * Search users
@@ -13,18 +16,13 @@ class UserAPI extends APIDefinition {
    * 
    * @param array $filter array of variables to filter on
    */
-  public function user( array $filter ) : array {
-    
-    $query = <<< END
+  public function user(array $filter): array
+  {
+
+    $query = "
     query {
       userItems(
-        filters: {
-          site_id: "$filter[site_id]",
-          username: "$filter[username]",
-          first_name: "$filter[first_name]",
-          last_name: "$filter[last_name]",
-          email: "$filter[email]"
-        }
+        filters: " . JSONEncodedGQL::encode($filter) . "
       ){
         username,
         first_name, 
@@ -44,19 +42,17 @@ class UserAPI extends APIDefinition {
         orcid_settings
       }
     }
-    END;
-
-    $result = $this->getClient()->call($query, Client::METHOD_GET);
+    ";
     
-        if (!empty($result['data'])) {
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
 
-          if ( $result['data']['userItems'] ) {
-              return $result['data']['userItems'];
-          }
-        
-        }
+    if (!empty($result['data'])) {
+
+      if ($result['data']['userItems']) {
+        return $result['data']['userItems'];
+      }
+    }
 
     return [];
   }
-
 }
