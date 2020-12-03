@@ -11,8 +11,30 @@ class UserAPI extends APIDefinition
 {
 
   /**
-   * Search users
-   * Returns an array of users
+   * Defining profile fields
+   */
+  private $userProfileFields = '
+        username,
+        first_name, 
+        last_name,
+        email,
+        perm_group_id,
+        avatar,
+        gender,
+        nationality,
+        country_of_residence,
+        organization_id,
+        publication,
+        bio,
+        specialization,
+        career_stage,
+        orcid,
+        orcid_settings
+  ';
+
+  /**
+   * Retrieve users.
+   * Returns an array of users based on fields
    * 
    * @param array $filter array of variables to filter on
    */
@@ -24,22 +46,7 @@ class UserAPI extends APIDefinition
       userItems(
         filters: " . JSONEncodedGQL::encode($filter) . "
       ){
-        username,
-        first_name, 
-        last_name,
-        email,
-        perm_group_id,
-        avatar,
-        gender:,
-        nationality,
-        country_of_residence,
-        organization_id,
-        publication,
-        bio,
-        specialization,
-        career_stage,
-        orcid,
-        orcid_settings
+        {$this->userProfileFields}
       }
     }
     ";
@@ -54,5 +61,19 @@ class UserAPI extends APIDefinition
     }
 
     return [];
+  }
+
+  /**
+   * Search for users.
+   * Returns an array of users based on search string
+   * 
+   * @param string $search Search string to query for.
+   * @param array $filter array of additional variables to filter on
+   */
+  public function search( string $search, array $filter = []): array
+  {
+    $filter['search'] = $search;
+
+    return $this->user($filter);
   }
 }
