@@ -1,11 +1,13 @@
 <?php
 
 namespace ARIA\GraphQLClient\API;
+
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
 
-class AccessAPI extends APIDefinition {
+class AccessAPI extends APIDefinition
+{
 
   /**
    * Does the currently authenticated user (as defined by your authentication token) have access to view
@@ -17,7 +19,8 @@ class AccessAPI extends APIDefinition {
    * @param string $site_id UUID of the site
    * @param string $username UUID of the user
    */
-  public function userViewProfile( string $site_id, string $username ) : bool {
+  public function userViewProfile(string $site_id, string $username): bool
+  {
 
     $mutation = <<< END
     mutation {
@@ -37,13 +40,43 @@ class AccessAPI extends APIDefinition {
 
     if (!empty($result['data'])) {
 
-        if ( $result['data']['userProfileCall'] === true || $result['data']['userProfileAccess'] === true ) {
-            return true;
-        }
-        
+      if ($result['data']['userProfileCall'] === true || $result['data']['userProfileAccess'] === true) {
+        return true;
+      }
     }
 
     return false;
   }
 
+  /**
+   * Does the currently authenticated user (as defined by your authentication token) leave the given site?
+   * 
+   * This looks at the call and access endpoints and returns true if you are not a member of a proposal or call application team 
+   * 
+   * @param string $site_id UUID of the site
+   * @param string $username UUID of the user
+   */
+  public function canUserLeaveSite(string $site_id, string $username): bool
+  {
+
+    $mutation = <<< END
+    mutation {    
+      canUserLeaveSite(input: {
+        site_id: "$site_id",
+        username: "$username"
+      })
+    }
+    END;
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['canUserLeaveSite'] === true) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
