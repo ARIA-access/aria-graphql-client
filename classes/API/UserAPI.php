@@ -76,4 +76,43 @@ class UserAPI extends APIDefinition
 
     return $this->user($filter);
   }
+
+    /**
+   * Retrieve site scopes
+   * Returns an array of scopes based on site_id
+   * 
+   * @param string $site_id 
+   */
+  public function site_scope( string $site_id): array
+  {
+    $query = <<< END
+      query {
+        siteScopeItems(
+          filters: {
+            site_id: "$site_id"
+          }
+        ) {
+            site_id,
+            scope_id,
+            scopeItems {
+              reference,
+              name,
+              description
+            }
+        }
+      }
+    END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['siteScopeItems']) {
+        return $result['data']['siteScopeItems'];
+      }
+    }
+
+    return [];
+  }
+
 }
