@@ -77,7 +77,7 @@ class UserAPI extends APIDefinition
     return $this->user($filter);
   }
 
-    /**
+  /**
    * Retrieve site scopes
    * Returns an array of scopes based on site_id
    * 
