@@ -87,7 +87,7 @@ class UserAPI extends APIDefinition
   {
     $query = <<< END
       query {
-        siteScopeItems(
+        site_scopeItems(
           filters: {
             site_id: "$site_id"
           }
@@ -107,8 +107,8 @@ class UserAPI extends APIDefinition
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['siteScopeItems']) {
-        return $result['data']['siteScopeItems'];
+      if ($result['data']['site_scopeItems']) {
+        return $result['data']['site_scopeItems'];
       }
     }
 
