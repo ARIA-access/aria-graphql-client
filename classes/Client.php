@@ -78,6 +78,11 @@ class Client
     if (!empty($query)) $body['query'] = $query;
     //if (!empty($mutations)) $body['mutations'] = $mutations;
     if (!empty($variables)) $body['variables'] = $variables;
+
+    // Catch a nulled endpoint
+    if (empty($this->endpoint)) {
+      throw new CallException('No GraphQL endpoint specified');
+    }
       
     $response = $client->request($method, $this->endpoint, [
       'headers' => $headers,
