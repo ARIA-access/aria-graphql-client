@@ -59,20 +59,25 @@ class AccessAPI extends APIDefinition
   public function canUserLeaveSite(string $site_id, string $username): bool
   {
 
-    $mutation = <<< END
-    mutation {    
-      canUserLeaveSite(input: {
+    $query = <<< END
+    query {    
+      canUserLeaveSiteItems(filters: {
         site_id: "$site_id",
         username: "$username"
       })
+      {
+        username
+        site_id
+        canUserLeaveSite
+      }
     }
     END;
 
-    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+    $result = $this->getClient()->call($query, Client::METHOD_POST);
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['canUserLeaveSite'] === true) {
+      if ($result['data']['canUserLeaveSiteItems'][0]['canUserLeaveSite'] !== 0) {
         return true;
       }
     }
