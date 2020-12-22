@@ -7,6 +7,10 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class CachedClient extends Client {
 
+    const EXPIRES_ONE_MINUTE = 60;
+    const EXPIRES_FIVE_MINUTES = 600;
+    const EXPIRES_DAY = 86400;
+
     private $cache;
     private $expiry;
 
