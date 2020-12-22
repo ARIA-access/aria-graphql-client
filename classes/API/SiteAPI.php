@@ -10,6 +10,72 @@ use ARIA\GraphQLClient\JSONEncodedGQL;
 class SiteAPI extends APIDefinition
 {
 
+
+  /**
+   * Is the user a member of a site
+   * 
+   * @param string $site_id UUID of the site
+   * @param string $username username of the user 
+   */
+  public function isMember(string $site_id, string $username): bool
+  {
+
+    $query = <<< END
+      query {
+          isMemberItems(filters: {
+          site_id: "$site_id",
+          username: "$username"
+        })
+        {
+          is_member
+        }
+      }
+    END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['isMemberItems'][0]['is_member'] === true) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Join the currently authenticated user to a site, if possible
+   *
+   * @param string $site_id
+   * @return boolean
+   */
+  public function join(string $site_id): bool {
+
+    $mutation = <<< END
+      mutation {
+        joinSite(input: {
+          site_id: "$site_id"
+        }) {
+            id,
+            site_id,
+            username
+        }
+      }
+    END;
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['joinSite']['site_id'] === $site_id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /**
    * Is the user a site administrator for the site
    * 
