@@ -148,23 +148,28 @@ class SiteAPI extends APIDefinition
    * @param string $site_id 
    * @param string $username
    */
-  public function siteAdministrator(string $site_id, $username): array
+  public function siteAdministrator(string $site_id = null, string $username = null): array
   {
 
-    $query = <<< END
+    $filter = [];
+    if (!empty($site_id)) {
+      $filter['site_id'] = $site_id;
+    }
+    if (!empty($username)) {
+      $filter['username'] = $username;
+    }
+
+    $query = "
       query {
         site_administratorItems(
-          filters: {
-            site_id: "$site_id",
-            username: "$username"
-          }
+          filters: " . JSONEncodedGQL::encode($filter) . "
         ) {
             id,
             site_id,
             username
         }
       }
-    END;
+    ";
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
