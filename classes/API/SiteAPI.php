@@ -45,6 +45,41 @@ class SiteAPI extends APIDefinition
   }
 
   /**
+   * Retrieve usernames who are members of a given site.
+   * 
+   * When passed a site ID, return the appropriate membership. This function call requires that the 
+   * authenticated user be a site admin of the requested site.
+   *
+   * @param string $site_id
+   * @return array|null
+   */
+  public function getMembers( string $site_id ) : ? array {
+
+    $query = <<< END
+      query {
+        getUserGroupSiteMembershipItems(filters: {
+          site_id: "$site_id"
+        })
+        {
+          site_id
+          members
+        }
+      }
+    END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+      
+      if (!empty($result['data']['getUserGroupSiteMembershipItems'][0]['members'])) {
+        return $result['data']['getUserGroupSiteMembershipItems'][0]['members'];
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Join the currently authenticated user to a site, if possible
    *
    * @param string $site_id
