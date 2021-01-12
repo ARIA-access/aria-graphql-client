@@ -1,7 +1,7 @@
 {
     "name": "aria-php/aria-graphql-client",
     "description": "ARIA GraphQL library",
-    "version": "1.1.19",
+    "version": "1.1.20",
     "type": "library",
     "license": "LGPL-3.0-or-later",
     "authors": [
