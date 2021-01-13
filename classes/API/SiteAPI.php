@@ -51,18 +51,22 @@ class SiteAPI extends APIDefinition
    * authenticated user be a site admin of the requested site.
    *
    * @param string $site_id
+   * @param integer $limit
+   * @param integer $offset
    * @return array|null
    */
-  public function getMembers( string $site_id ) : ? array {
+  public function getMembers( string $site_id, int $limit = 10, int $offset = 0 ) : ? array {
 
     $query = <<< END
       query {
-        getUserGroupSiteMembershipItems(filters: {
+        getUserGroupSiteMembershipItemFeed(filters: {
           site_id: "$site_id"
-        })
+        }, first: $limit, fromIndex: $offset)
         {
-          site_id
-          members
+          nodes {
+            site_id
+            username
+          }
         }
       }
     END;
@@ -70,9 +74,8 @@ class SiteAPI extends APIDefinition
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
     if (!empty($result['data'])) {
-      
-      if (!empty($result['data']['getUserGroupSiteMembershipItems'][0]['members'])) {
-        return $result['data']['getUserGroupSiteMembershipItems'][0]['members'];
+      if (!empty($result['data']['getUserGroupSiteMembershipItemFeed']['nodes'])) {
+        return $result['data']['getUserGroupSiteMembershipItemFeed']['nodes'];
       }
     }
 
