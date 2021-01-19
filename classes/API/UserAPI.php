@@ -29,7 +29,8 @@ class UserAPI extends APIDefinition
         specialization,
         career_stage,
         orcid,
-        orcid_settings
+        orcid_settings,
+        aria_uid
   ';
 
   /**
@@ -67,14 +68,46 @@ class UserAPI extends APIDefinition
    * Search for users.
    * Returns an array of users based on search string
    * 
-   * @param string $search Search string to query for.
-   * @param array $filter array of additional variables to filter on
+   * @param array $filter array of additional variables to filter on (options include search, username, email, site_id etc)
+   * @param array $order (ie. 'id' => asc)
+   * @param int $limit
+   * @param int $offset
    */
-  public function search( string $search, array $filter = []): array
+  public function search(array $filter = [], array $order = [], int $limit = 10, int $offset = 0 ): array
   {
-    $filter['search'] = $search;
 
-    return $this->user($filter);
+    $query = "
+      query {
+        userItemFeed(
+          filters: " . JSONEncodedGQL::encode($filter) . ",
+          first: ". $limit. ",
+          fromIndex: ". $offset. ",
+          sort: " . JSONEncodedGQL::encode($order) . "
+        ){
+          totalCount,
+          pageInfo {
+            hasNext,
+            endCursor,
+            hasNextSlice
+          },
+          nodes {
+            {$this->userProfileFields}
+          }
+        }
+      }
+    ";
+    
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['userItemFeed']) {
+        return $result['data']['userItemFeed'];
+      }
+    }
+
+    return [];
+
   }
 
   /**
@@ -109,6 +142,36 @@ class UserAPI extends APIDefinition
 
       if ($result['data']['site_scopeItems']) {
         return $result['data']['site_scopeItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Update User
+   * Returns an array of scopes based on site_id
+   * 
+   * @param array $filter - array must include username
+   */
+  public function updateUserData(array $filter): array
+  {
+    $mutation = "
+      mutation {
+        updateUserData(
+          input: " . JSONEncodedGQL::encode($filter) . "
+        ) {
+          {$this->userProfileFields}
+        }
+      }
+    ";
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['updateUserData']) {
+        return $result['data']['updateUserData'];
       }
     }
 
