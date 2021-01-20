@@ -253,4 +253,40 @@ class SiteAPI extends APIDefinition
 
     return [];
   }
+
+  /**
+   * Query the site table to find out details of available sites.
+   * 
+   * @param array $filter
+   * @return array|null
+   */
+  public function site( array $filter = [] ) : ? array {
+
+    $query = "
+    query {
+      siteItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        id
+        name
+        title
+        theme
+        updated
+        active
+      }
+    }
+    ";
+    
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['siteItems']) {
+        return $result['data']['siteItems'];
+      }
+    }
+
+    return [];
+  }
+
 }
