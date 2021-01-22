@@ -204,7 +204,7 @@ class UserAPI extends APIDefinition
         isProfileCompleteItems(
           filters: {
             username: "$username"
-            scope_id: "$scope_id"
+            scope_id: $scope_id
         }
       ) {
           is_profile_complete
