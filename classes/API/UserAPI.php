@@ -149,6 +149,83 @@ class UserAPI extends APIDefinition
   }
 
   /**
+   * Retrieve scope attributes
+   * Returns an array of attributes based on scope ID
+   * 
+   * @param string $scope_id 
+   */
+  public function scope_attributes( string $scope_id): array
+  {
+    $query = <<< END
+      query {
+        scope_attributeItems(
+          filters: {
+            scope_id: "$scope_id"
+          }
+        ) {
+            id,
+            attributeItems {
+              reference,
+              name,
+              description
+            }
+        }
+      }
+    END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['scope_attributeItems']) {
+        return $result['data']['scope_attributeItems'];
+      }
+    }
+
+    return [];
+  }
+
+    /**
+   * Is the user profile completed for a bundle of attributes
+   * Returns an array of attributes based on array ofscopes
+   * 
+   * @param array $scope_id 
+   * @param string $username
+   * 
+   * @return bool
+   */
+  public function isProfileComplete( array $scope_id, string $username): bool
+  {
+
+    $scope_id = json_encode($scope_id); 
+
+    $query = <<< END
+      query {
+        isProfileCompleteItems(
+          filters: {
+            username: "$username"
+            scope_id: $scope_id
+        }
+      ) {
+          is_profile_complete
+      }
+    }
+    
+    END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['isProfileCompleteItems'][0]['is_profile_complete'] === true) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Update User
    * Returns an array of scopes based on site_id
    * 
