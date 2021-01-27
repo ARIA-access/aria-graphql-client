@@ -55,4 +55,47 @@ class OrganizationAPI extends APIDefinition
 
     return [];
   }
+
+  /**
+   * Perform a paginated search on organisations
+   *
+   * @param array $filter
+   * @param array $order
+   * @param integer $limit
+   * @param integer $offset
+   * @return array
+   */
+  public function search(array $filter = [], array $order = [], int $limit = 10, int $offset = 0 ): array
+  {
+    $query = "
+      query {
+        organizationItemFeed(
+          filters: " . JSONEncodedGQL::encode($filter) . ",
+          first: ". $limit. ",
+          fromIndex: ". $offset. ",
+          sort: " . JSONEncodedGQL::encode($order) . "
+        ){
+          totalCount,
+          pageInfo {
+            hasNext,
+            endCursor,
+            hasNextSlice
+          },
+          nodes {
+            {$this->organizationFields}
+          }
+        }
+      }
+    ";
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['organizationItemFeed']) {
+        return $result['data']['organizationItemFeed'];
+      }
+    }
+
+    return [];
+  }
 }

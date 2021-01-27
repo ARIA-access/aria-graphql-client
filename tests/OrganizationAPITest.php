@@ -14,13 +14,22 @@ class OrganizationAPITest extends \PHPUnit\Framework\TestCase {
     
     }
 
-    public function testSiteDomains() {
+    public function testOrganisation() {
 
         $result = $this->definition->organization();
-            
+
         $this->assertTrue(count($result) > 0);
 
         $this->assertIsString($result[0]['id']);
+    }
+
+    public function testOrganisationSearch() {
+
+        $result = $this->definition->search();
+         
+        $this->assertTrue(count($result) > 0);
+
+        $this->assertIsString($result['nodes'][0]['id']);
     }
     
 }
