@@ -23,16 +23,26 @@ class AccessAPI extends APIDefinition
   {
 
     $mutation = <<< END
-    mutation {
-      userProfileCall(input:{
-        site_id: "$site_id",
-        username: "$username"
-      }) 
-      
-      userProfileAccess(input: {
+    query {    
+      userProfileCallItems(filters: {
         site_id: "$site_id",
         username: "$username"
       })
+      {
+        username
+        site_id
+        userProfileCall
+      }
+
+      userProfileAccessItems(filters: {
+        site_id: "$site_id",
+        username: "$username"
+      })
+      {
+        username
+        site_id
+        userProfileAccess
+      }
     }
     END;
 
@@ -40,9 +50,13 @@ class AccessAPI extends APIDefinition
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['userProfileCall'] === true || $result['data']['userProfileAccess'] === true) {
+      if (
+        ($result['data']['userProfileCallItems'][0]['userProfileCall'] !== 0) &&
+        ($result['data']['userProfileAccessItems'][0]['userProfileAccess'] !== 0)
+      ){
         return true;
       }
+
     }
 
     return false;
