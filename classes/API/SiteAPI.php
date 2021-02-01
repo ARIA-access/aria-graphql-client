@@ -30,7 +30,7 @@ class SiteAPI extends APIDefinition
           is_member
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -55,7 +55,8 @@ class SiteAPI extends APIDefinition
    * @param integer $offset
    * @return array|null
    */
-  public function getMembers( string $site_id, int $limit = 10, int $offset = 0 ) : ? array {
+  public function getMembers(string $site_id, int $limit = 10, int $offset = 0): ?array
+  {
 
     $query = <<< END
       query {
@@ -69,7 +70,7 @@ class SiteAPI extends APIDefinition
           }
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -88,7 +89,8 @@ class SiteAPI extends APIDefinition
    * @param string $site_id
    * @return boolean
    */
-  public function join(string $site_id): bool {
+  public function join(string $site_id): bool
+  {
 
     $mutation = <<< END
       mutation {
@@ -100,7 +102,7 @@ class SiteAPI extends APIDefinition
             username
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($mutation, Client::METHOD_POST);
 
@@ -133,7 +135,7 @@ class SiteAPI extends APIDefinition
           is_admin
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -165,7 +167,7 @@ class SiteAPI extends APIDefinition
             username
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($mutation, Client::METHOD_POST);
 
@@ -227,7 +229,8 @@ class SiteAPI extends APIDefinition
    * @param array $filter
    * @return array|null
    */
-  public function site_domain( array $filter = [] ) : ? array {
+  public function site_domain(array $filter = []): ?array
+  {
 
     $query = "
     query {
@@ -241,7 +244,7 @@ class SiteAPI extends APIDefinition
       }
     }
     ";
-    
+
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
     if (!empty($result['data'])) {
@@ -260,7 +263,8 @@ class SiteAPI extends APIDefinition
    * @param array $filter
    * @return array|null
    */
-  public function site( array $filter = [] ) : ? array {
+  public function site(array $filter = []): ?array
+  {
 
     $query = "
     query {
@@ -276,7 +280,7 @@ class SiteAPI extends APIDefinition
       }
     }
     ";
-    
+
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
     if (!empty($result['data'])) {
@@ -288,5 +292,4 @@ class SiteAPI extends APIDefinition
 
     return [];
   }
-
 }

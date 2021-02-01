@@ -44,7 +44,7 @@ class AccessAPI extends APIDefinition
         userProfileAccess
       }
     }
-    END;
+END;
 
     $result = $this->getClient()->call($mutation, Client::METHOD_POST);
 
@@ -85,7 +85,7 @@ class AccessAPI extends APIDefinition
         canUserLeaveSite
       }
     }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_POST);
 

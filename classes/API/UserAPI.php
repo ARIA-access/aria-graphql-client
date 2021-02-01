@@ -134,7 +134,7 @@ class UserAPI extends APIDefinition
             }
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -171,7 +171,7 @@ class UserAPI extends APIDefinition
             }
         }
       }
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -211,7 +211,7 @@ class UserAPI extends APIDefinition
       }
     }
     
-    END;
+END;
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
