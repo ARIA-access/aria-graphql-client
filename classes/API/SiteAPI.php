@@ -150,6 +150,39 @@ END;
   }
 
   /**
+   * Add site administrator
+   * 
+   * @param string $uuid UUID of the user
+   */
+  public function addSiteAdministrator(string $uuid, string $site_id): bool
+  {
+
+    $mutation = <<< END
+      mutation {
+        addSiteAdministrator(input: {
+          username: "$uuid",
+          site_id: "$site_id"
+        }) {
+            id,
+            site_id,
+            username
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['addSiteAdministrator']['username'] === $uuid) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Delete site administrator
    * 
    * @param string $id UUID of the site administrator
