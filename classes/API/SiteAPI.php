@@ -187,13 +187,14 @@ END;
    * 
    * @param string $id UUID of the site administrator
    */
-  public function deleteSiteAdministrator(string $uuid): bool
+  public function deleteSiteAdministrator(string $uuid, string $site_id): bool
   {
 
     $mutation = <<< END
       mutation {
         deleteSiteAdministrator(input: {
-          id: "$uuid",
+          username: "$uuid",
+          site_id: "$site_id"
         }) {
             id,
             site_id,
@@ -206,7 +207,7 @@ END;
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['deleteSiteAdministrator']['id'] === $uuid) {
+      if ($result['data']['deleteSiteAdministrator']['username'] === $uuid) {
         return true;
       }
     }
