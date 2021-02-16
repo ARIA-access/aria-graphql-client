@@ -34,4 +34,20 @@ class SiteAPITest extends \PHPUnit\Framework\TestCase {
 
         $this->assertNotEmpty($result);
     }
+
+    public function testAddLog() {
+
+        $result = $this->definition->info(self::$site_id, "I am a log message", [ 'testvalue' => 'context value']);
+
+        $this->assertTrue($result);
+    }
+
+    public function testLogs() {
+
+        $logs = $this->definition->logs(['site_id' => self::$site_id]);
+
+        $this->assertNotEmpty($logs);
+
+        $this->assertEquals($logs['nodes'][0]['message'], "I am a log message");
+    }
 }

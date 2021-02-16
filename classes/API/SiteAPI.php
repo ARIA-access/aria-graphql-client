@@ -10,6 +10,157 @@ use ARIA\GraphQLClient\JSONEncodedGQL;
 class SiteAPI extends APIDefinition
 {
 
+  const SITE_LOG_LEVEL_DEBUG = 'debug';
+  const SITE_LOG_LEVEL_INFO = 'info';
+  const SITE_LOG_LEVEL_WARNING = 'warning';
+  const SITE_LOG_LEVEL_ERROR = 'error';
+  const SITE_LOG_LEVEL_CRIT = 'critical';
+
+  /**
+   * Retrieve the logs for a one or more sites that you have access to (are admins for).
+   *
+   * @param array $filter
+   * @param array $order
+   * @param integer $limit
+   * @param integer $offset
+   * @return array
+   */
+  public function logs(array $filter = [], array $order = [], int $limit = 10, int $offset = 0 ): array
+  {
+
+    $query = "
+      query {
+        site_logItemFeed(
+          filters: " . JSONEncodedGQL::encode($filter) . ",
+          first: ". $limit. ",
+          fromIndex: ". $offset. ",
+          sort: " . JSONEncodedGQL::encode($order) . "
+        ){
+          totalCount,
+          pageInfo {
+            hasNext,
+            endCursor,
+            hasNextSlice
+          },
+          nodes {
+            id
+            site_id
+            message
+            level
+            context
+          }
+        }
+      }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['site_logItemFeed']) {
+        return $result['data']['site_logItemFeed'];
+      }
+    }
+
+    return [];
+
+  }
+
+  /**
+   * Add a site log entry.
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param string $level
+   * @param array $context
+   * @return boolean
+   */
+  public function log( string $site_id, string $message, string $level = self::SITE_LOG_LEVEL_INFO, array $context = [] ) : bool {
+
+    $mutation = "
+      mutation {
+        addSiteLog(input: {
+          site_id: \"$site_id\"
+          message: \"$message\"
+          level: \"$level\"
+          context: " . JSONEncodedGQL::encode($context) . "
+        }) {
+          id
+          site_id
+          message
+          level
+          context
+        }
+      }
+      ";
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if (!empty($result['data']['addSiteLog']['id'])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Log a debug log entry
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param array $context
+   * @return boolean
+   */
+  public function debug(string $site_id, string $message, array $context = []) : bool {
+    return $this->log($site_id, $message, self::SITE_LOG_LEVEL_DEBUG, $context);
+  }
+  /**
+   * Log an info level log entry.
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param array $context
+   * @return boolean
+   */
+  public function info(string $site_id, string $message, array $context = []) : bool {
+    return $this->log($site_id, $message, self::SITE_LOG_LEVEL_INFO, $context);
+  }
+  /**
+   * Log a warning log level message
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param array $context
+   * @return boolean
+   */
+  public function warning(string $site_id, string $message, array $context = []) : bool {
+    return $this->log($site_id, $message, self::SITE_LOG_LEVEL_WARNING, $context);
+  }
+  /**
+   * Log an error message in the site log
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param array $context
+   * @return boolean
+   */
+  public function error(string $site_id, string $message, array $context = []) : bool {
+    return $this->log($site_id, $message, self::SITE_LOG_LEVEL_ERROR, $context);
+  }
+  /**
+   * Log a critical error in the site log
+   *
+   * @param string $site_id
+   * @param string $message
+   * @param array $context
+   * @return boolean
+   */
+  public function critical(string $site_id, string $message, array $context = []) : bool {
+    return $this->log($site_id, $message, self::SITE_LOG_LEVEL_CRIT, $context);
+  }
 
   /**
    * Is the user a member of a site
