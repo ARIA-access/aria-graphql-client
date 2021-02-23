@@ -477,4 +477,45 @@ END;
 
     return [];
   }
+
+  /**
+   * Retrieve a list of sites to which I am a member.
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function mySites( array $filter ): ?array 
+  {
+
+    $query = "
+    query {
+      mySitesItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        id
+        username
+        site_id
+        siteItems {
+          id
+          name
+          title
+          theme
+          updated
+          active
+        }
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['mySitesItems']) {
+        return $result['data']['mySitesItems'];
+      }
+    }
+
+    return [];
+  }
 }
