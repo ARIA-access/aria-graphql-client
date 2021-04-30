@@ -26,9 +26,7 @@ class EventDispatchAPI extends APIDefinition
           origin: \"$origin\",
           event: \"$event\",
           payload: " . JSONEncodedGQL::encode($payload) . "
-        }) {
-            status
-        }
+        })
       }
       ";
 
