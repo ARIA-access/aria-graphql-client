@@ -185,7 +185,40 @@ END;
     return [];
   }
 
-    /**
+  /**
+   * Refresh scopes granted to a user for a specific client.
+   *
+   * @param string $client_id Optional client ID
+   * @return boolean
+   */
+  public function refreshScopes( string $client_id = null ) : bool 
+  {
+
+    $client = "";
+    if (!empty($client_id)) {
+      $client = "client_id: \"$client_id\"";
+    }
+    $mutation = "
+      mutation {
+        refreshClientScopes(input: {
+          $client
+        })
+      }
+      ";
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['refreshClientScopes']['status'] !== false) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Is the user profile completed for a bundle of attributes
    * Returns an array of attributes based on array ofscopes
    * 
