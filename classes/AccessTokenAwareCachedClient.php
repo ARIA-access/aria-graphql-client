@@ -29,7 +29,7 @@ class AccessTokenAwareCachedClient extends CachedClient
             // Extract the token subject
             $username = $payload['sub'];
 
-            $parameters[ $username ];
+            $parameters[] = $username;
         }
 
         return parent::getKey($parameters);
