@@ -28,7 +28,8 @@
         "guzzlehttp/guzzle": "^7.0"
     },
     "suggest": {
-        "symfony/cache": "For cached queries"
+        "symfony/cache": "For cached queries",
+        "firebase/php-jwt": "For Access Token aware cached queries"
     }
 }
 

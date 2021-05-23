@@ -23,15 +23,22 @@ class CachedClient extends Client {
 
     }
 
+    protected function getKey( array $parameters = [] ) : string {
+
+        $parameters[] = $this->getEndpoint();
+
+        return 'gql-call-' . sha1( json_encode( $parameters ));
+        
+    }
+
     public function call(string $query, string $method = Client::METHOD_GET, string $variables = null) : ? array {
 
         $expiry = $this->expiry;
-        $key = "gql-call-" . sha1( json_encode ([
-            $this->getEndpoint(),
+        $key = $this->getKey( [
             $query,
             $variables,
             $method
-        ]) );
+        ] );
 
         return $this->cache->get($key, function(ItemInterface $item) use ($expiry, $query, $variables, $method) {
         
