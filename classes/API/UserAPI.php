@@ -198,11 +198,14 @@ END;
     if (!empty($client_id)) {
       $client = "client_id: \"$client_id\"";
     }
+    
     $mutation = "
       mutation {
         refreshClientScopes(input: {
           $client
-        })
+        }) {
+          status
+        }
       }
       ";
 
