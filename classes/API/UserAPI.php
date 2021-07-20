@@ -33,6 +33,19 @@ class UserAPI extends APIDefinition
         aria_uid
   ';
 
+  private $groupMembershipFields = '
+    group
+    username
+  ';
+
+  private $groupFields = '
+    id
+    site_id
+    label
+    handler
+    options
+  ';
+
   /**
    * Retrieve users.
    * Returns an array of users based on fields
@@ -58,6 +71,50 @@ class UserAPI extends APIDefinition
 
       if ($result['data']['userItems']) {
         return $result['data']['userItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Retrieve user's groups
+   * Returns an array of users based on fields
+   * 
+   * @param array $filter array of variables to filter on
+   */
+  public function userGroupMembership(array $filter, bool $expanded = true): array
+  {
+    $expandedQuery = '';
+    if ($expanded) {
+
+      $expandedQuery = "
+      userItems {
+        {$this->userProfileFields}
+      }
+      groupItems {
+        {$this->groupFields}
+      }
+      ";
+    }
+
+    $query = "
+    query {
+      userGroupMembershipItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        {$this->groupMembershipFields}
+        $expandedQuery
+      }
+    }
+    ";
+    
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['userGroupMembershipItems']) {
+        return $result['data']['userGroupMembershipItems'];
       }
     }
 
