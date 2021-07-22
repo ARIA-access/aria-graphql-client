@@ -1,6 +1,7 @@
 <?php
 
 use ARIA\GraphQLClient\API\Fields\GroupFields;
+use ARIA\GraphQLClient\API\Fields\GroupMembershipFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -10,7 +11,8 @@ class GroupAPI extends APIDefinition
 {
 
   use GroupFields;
-  
+  use GroupMembershipFields;
+
   /**
    * Update User
    * Returns an array of scopes based on site_id
@@ -35,6 +37,39 @@ class GroupAPI extends APIDefinition
 
       if ($result['data']['createGroup']) {
         return $result['data']['createGroup'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Add a user to a group.
+   * This will either join a user to an already existing static group and add them to your list of groups, or if a dynamic group, it will just add
+   * the group to your list with paramters. 
+   *
+   * @param array $filter
+   * @return array
+   */
+  public function addToGroup( array $filter ) : array 
+  {
+    $mutation = "
+      mutation {
+        addToGroup(
+          input: " . JSONEncodedGQL::encode($filter) . "
+        ) {
+          {$this->groupMembershipFields},
+          options
+        }
+      }
+    ";
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['addToGroup']) {
+        return $result['data']['addToGroup'];
       }
     }
 
