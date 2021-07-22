@@ -2,6 +2,9 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Fields\GroupFields;
+use ARIA\GraphQLClient\API\Fields\GroupMembershipFields;
+use ARIA\GraphQLClient\API\Fields\UserProfileFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -10,41 +13,9 @@ use ARIA\GraphQLClient\JSONEncodedGQL;
 class UserAPI extends APIDefinition
 {
 
-  /**
-   * Defining profile fields
-   */
-  private $userProfileFields = '
-        username,
-        first_name, 
-        last_name,
-        email,
-        perm_group_id,
-        avatar,
-        gender,
-        nationality,
-        country_of_residence,
-        organization_id,
-        publication,
-        bio,
-        specialization,
-        career_stage,
-        orcid,
-        orcid_settings,
-        aria_uid
-  ';
-
-  private $groupMembershipFields = '
-    group
-    username
-  ';
-
-  private $groupFields = '
-    id
-    site_id
-    label
-    handler
-    options
-  ';
+  use UserProfileFields;
+  use GroupFields;
+  use GroupMembershipFields;
 
   /**
    * Retrieve users.
