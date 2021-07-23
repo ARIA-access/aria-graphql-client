@@ -76,6 +76,37 @@ class GroupAPI extends APIDefinition
     return [];
   }
 
+  /**
+   * When passed a "group" array of uuids, this method will return a list of sites to which are not on the list.
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function newUserGroups( array $filter ): ?array 
+  {
+
+    $query = "
+    query {
+      newUserGroupsItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        {$this->groupFields}
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['newUserGroupsItems']) {
+        return $result['data']['newUserGroupsItems'];
+      }
+    }
+
+    return [];
+  }
+
 
 
 }
