@@ -35,6 +35,13 @@ class SiteAPITest extends \PHPUnit\Framework\TestCase {
         $this->assertNotEmpty($result);
     }
 
+    public function testSiteMembersWithSubmissionOrTeam() {
+
+        $result = $this->definition->getMembersWithSubmissionOrTeam(self::$site_id);
+
+        $this->assertNotEmpty($result);
+    }
+
     public function testAddLog() {
 
         $result = $this->definition->info(self::$site_id, "I am a log message", [ 'testvalue' => 'context value']);

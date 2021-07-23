@@ -518,4 +518,42 @@ END;
 
     return [];
   }
+
+  /**
+   * Retrieve usernames of all users who are members of a given site that have a submission or are a member of a team.
+   * 
+   * The authenticated user making this request must be a site admin of the requested site.
+   *
+   * @param string $site_id
+   * @param integer $limit
+   * @param integer $offset
+   * @return array|null
+   */
+  public function getMembersWithSubmissionOrTeam(string $site_id, int $limit = 10, int $offset = 0): ?array
+  {
+
+    $query = <<< END
+      query {
+        usersWithSubmissionOrTeamItems(filters: {
+          site_id: "$site_id"
+        }, first: $limit, fromIndex: $offset)
+        {
+          nodes {
+            username
+            site_id
+          }
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+      if (!empty($result['data']['usersWithSubmissionOrTeamItemFeed']['nodes'])) {
+        return $result['data']['usersWithSubmissionOrTeamItemFeed']['nodes'];
+      }
+    }
+
+    return null;
+  }
 }
