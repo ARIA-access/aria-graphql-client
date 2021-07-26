@@ -2,6 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Fields\SiteFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -9,6 +10,8 @@ use ARIA\GraphQLClient\JSONEncodedGQL;
 
 class SiteAPI extends APIDefinition
 {
+
+  use SiteFields;
 
   const SITE_LOG_LEVEL_DEBUG = 'debug';
   const SITE_LOG_LEVEL_INFO = 'info';
@@ -456,12 +459,7 @@ END;
       siteItems(
         filters: " . JSONEncodedGQL::encode($filter) . "
       ){
-        id
-        name
-        title
-        theme
-        updated
-        active
+        {$this->siteFields}
       }
     }
     ";
@@ -496,12 +494,7 @@ END;
         username
         site_id
         siteItems {
-          id
-          name
-          title
-          theme
-          updated
-          active
+          {$this->siteFields}
         }
       }
     }
