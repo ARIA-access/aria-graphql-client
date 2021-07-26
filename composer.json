@@ -1,7 +1,7 @@
 {
     "name": "aria-php/aria-graphql-client",
     "description": "ARIA GraphQL library",
-    "version": "1.4.8",
+    "version": "1.4.9",
     "type": "library",
     "license": "LGPL-3.0-or-later",
     "authors": [
@@ -12,6 +12,10 @@
         {
             "name": "Fiona Sanderson",
             "email": "fiona@instruct-eric.eu"
+        },
+        {
+            "name": "Marcus Lowndes",
+            "email": "marcus.lowndes@instruct-eric.org"
         }
     ],
     "require-dev": {
