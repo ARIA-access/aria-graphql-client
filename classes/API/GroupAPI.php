@@ -1,5 +1,7 @@
 <?php
 
+namespace ARIA\GraphQLClient\API;
+
 use ARIA\GraphQLClient\API\Fields\GroupFields;
 use ARIA\GraphQLClient\API\Fields\GroupMembershipFields;
 use ARIA\GraphQLClient\APIDefinition;
