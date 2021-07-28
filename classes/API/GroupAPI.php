@@ -107,6 +107,38 @@ class GroupAPI extends APIDefinition
     return [];
   }
 
+  /**
+   * Retrieve my groups for a given site to which I am a member
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function myGroups( array $filter ): ?array 
+  {
+
+    $query = "
+    query {
+      myGroupsItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        site_id,
+        group
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['myGroupsItems']) {
+        return $result['data']['myGroupsItems'];
+      }
+    }
+
+    return [];
+  }
+
 
 
 }
