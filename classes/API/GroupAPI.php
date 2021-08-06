@@ -46,6 +46,36 @@ class GroupAPI extends APIDefinition
   }
 
   /**
+   * Remove a user from a given group by their username
+   *
+   * @param array $filter
+   * @return array
+   */
+  public function removeFromGroupByUsername( array $filter ) : array 
+  {
+    $mutation = "
+      mutation {
+        removeFromGroupByUsername(
+          input: " . JSONEncodedGQL::encode($filter) . "
+        ) {
+          id
+        }
+      }
+    ";
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['removeFromGroupByUsername']) {
+        return $result['data']['removeFromGroupByUsername'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
    * Add a user to a group.
    * This will either join a user to an already existing static group and add them to your list of groups, or if a dynamic group, it will just add
    * the group to your list with paramters. 
