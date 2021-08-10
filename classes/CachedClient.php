@@ -9,13 +9,14 @@ class CachedClient extends Client {
 
     const EXPIRES_ONE_MINUTE = 60;
     const EXPIRES_FIVE_MINUTES = 300;
+    const EXPIRES_TEN_MINUTES = 600;
     const EXPIRES_ONE_HOUR = 3600;
     const EXPIRES_DAY = 86400;
 
     private $cache;
     private $expiry;
 
-    public function __construct(AdapterInterface $cache, int $defaultExpiry = 600, string $endpoint = 'https://graphql.aria.services/graphql') {
+    public function __construct(AdapterInterface $cache, int $defaultExpiry = CachedClient::EXPIRES_TEN_MINUTES, string $endpoint = 'https://graphql.aria.services/graphql') {
 
         $this->cache = $cache;
         $this->expiry = $defaultExpiry;
