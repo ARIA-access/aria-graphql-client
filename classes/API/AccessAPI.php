@@ -138,7 +138,7 @@ END;
 
     if (!empty($result['data'])) {
       if (!empty($result['data']['usersWithSubmissionOrTeamItemFeed']['nodes'])) {
-        return $result['data']['usersWithSubmissionOrTeamItemFeed']['nodes'];
+        return $result['data']['usersWithSubmissionOrTeamItemFeed'];
       }
     }
 
