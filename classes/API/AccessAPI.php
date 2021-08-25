@@ -124,7 +124,7 @@ END;
         {
           totalCount,
           pageInfo {
-            endCursor,
+            nextIndex,
             hasNextSlice
           },
           nodes {
