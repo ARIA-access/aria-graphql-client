@@ -51,11 +51,11 @@ class GroupAPI extends APIDefinition
    * @param array $filter
    * @return array
    */
-  public function removeFromGroupByUsername( array $filter ) : array 
+  public function leaveGroup( array $filter ) : array 
   {
     $mutation = "
       mutation {
-        removeFromGroupByUsername(
+        leaveGroup(
           input: " . JSONEncodedGQL::encode($filter) . "
         ) {
           id
@@ -67,8 +67,8 @@ class GroupAPI extends APIDefinition
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['removeFromGroupByUsername']) {
-        return $result['data']['removeFromGroupByUsername'];
+      if ($result['data']['leaveGroup']) {
+        return $result['data']['leaveGroup'];
       }
     }
 
@@ -83,11 +83,11 @@ class GroupAPI extends APIDefinition
    * @param array $filter
    * @return array
    */
-  public function addToGroup( array $filter ) : array 
+  public function joinGroup( array $filter ) : array 
   {
     $mutation = "
       mutation {
-        addToGroup(
+        joinGroup(
           input: " . JSONEncodedGQL::encode($filter) . "
         ) {
           {$this->groupMembershipFields},
@@ -100,8 +100,8 @@ class GroupAPI extends APIDefinition
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['addToGroup']) {
-        return $result['data']['addToGroup'];
+      if ($result['data']['joinGroup']) {
+        return $result['data']['joinGroup'];
       }
     }
 
