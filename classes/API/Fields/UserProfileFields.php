@@ -24,6 +24,7 @@ trait UserProfileFields
     career_stage,
     orcid,
     orcid_settings,
-    aria_uid
+    aria_uid,
+    timezone
   ';
 }
