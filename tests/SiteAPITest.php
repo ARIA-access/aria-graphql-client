@@ -35,9 +35,9 @@ class SiteAPITest extends \PHPUnit\Framework\TestCase {
         $this->assertNotEmpty($result);
     }
 
-    public function testSiteMembersWithSubmissionOrTeam() {
+    public function testVisibleMembersDataForSite() {
 
-        $result = $this->definition->getMembersWithSubmissionOrTeam(self::$site_id);
+        $result = $this->definition->getVisibleMembersDataForSite(self::$site_id);
 
         $this->assertNotEmpty($result);
     }
