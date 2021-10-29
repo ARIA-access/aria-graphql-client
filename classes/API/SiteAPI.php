@@ -221,6 +221,7 @@ END;
           nodes {
             site_id
             username
+            created
           }
         }
       }
