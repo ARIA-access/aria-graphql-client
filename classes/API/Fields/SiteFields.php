@@ -14,6 +14,7 @@ trait SiteFields
     theme
     terms_url
     privacy_policy_url
+    created
     updated
     active
   ';
