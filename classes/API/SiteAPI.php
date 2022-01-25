@@ -272,6 +272,39 @@ END;
   }
 
   /**
+   * Leave the site
+   *
+   * @param string $site_id
+   * @return boolean
+   */
+  public function leave(string $site_id): bool
+  {
+
+    $mutation = <<< END
+      mutation {
+        leaveSite(input: {
+          site_id: "$site_id"
+        }) {
+          site_id,
+          username,
+          is_member
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($mutation, Client::METHOD_POST);
+
+    if (!empty($result['data'])) {
+
+      if (!$result['data']['leaveSite']['is_member']) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Is the user a site administrator for the site
    * 
    * @param string $site_id UUID of the site
