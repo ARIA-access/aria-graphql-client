@@ -275,15 +275,17 @@ END;
    * Leave the site
    *
    * @param string $site_id
+   * @param string $username optional name
    * @return boolean
    */
-  public function leave(string $site_id): bool
+  public function leave(string $site_id, string $username = null): bool
   {
 
     $mutation = <<< END
       mutation {
         leaveSite(input: {
           site_id: "$site_id"
+          username: "$username"
         }) {
           site_id,
           username,
