@@ -2,6 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Fields\EventDispatchFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -9,6 +10,8 @@ use ARIA\GraphQLClient\JSONEncodedGQL;
 
 class EventDispatchAPI extends APIDefinition
 {
+  use EventDispatchFields;
+
   /**
    * Dispatch an event
    *
@@ -26,7 +29,9 @@ class EventDispatchAPI extends APIDefinition
           origin: \"$origin\",
           event: \"$event\",
           payload: " . JSONEncodedGQL::encode($payload) . "
-        })
+        }){
+          {$this->eventDispatchFields}
+        }
       }
       ";
 
