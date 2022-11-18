@@ -53,6 +53,21 @@ class Client
     return $this->endpoint;
 
   }
+
+  /**
+   * Called before call, override to do stuff
+   *
+   * @return void
+   */
+  protected function beginCallHook() {}
+
+
+  /**
+   * Called after call, override to do stuff
+   *
+   * @return void
+   */
+  protected function endCallHook() {}
   
   /**
    * Execute a GraphQL Call.
@@ -64,6 +79,8 @@ class Client
    */
   public function call(string $query, string $method = Client::METHOD_GET, string $variables = null) : ? array {
     
+    $this->beginCallHook();
+
     $client = new http();
     
     $headers = [
@@ -102,6 +119,8 @@ class Client
 
       throw new CallException('Unknown GraphQL Error');
     }
+
+    $this->endCallHook();
 
     return $responsebody;
   }
