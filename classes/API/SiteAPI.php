@@ -322,7 +322,7 @@ END;
       // got here and we 
       return in_array($username, $site_ex[0]['administrators']);
 
-    } catch (\RuntimeException) {
+    } catch (\RuntimeException $e) {
       // Suppress errors for when this is an unsupported query
     }
 
@@ -536,7 +536,7 @@ END;
     $query = "
     query {
       site_exItems(
-        filters: " . JSONEncodedGQL::encode(['site_id' => $site_id]) . "
+        filters: " . JSONEncodedGQL::encode(['id' => $site_id]) . "
       ){
         {$this->siteFields}
       }
