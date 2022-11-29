@@ -39,7 +39,7 @@ class EventDispatchAPI extends APIDefinition
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['dispatchEvent']['status'] !== false) {
+      if (isset($result['data']['dispatchEvent']['status']) && $result['data']['dispatchEvent']['status'] !== false) {
         return true;
       }
     }
