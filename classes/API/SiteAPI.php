@@ -322,7 +322,7 @@ END;
       $site_ex = $this->siteEx($site_id);
 
       // got here and we 
-      return in_array($username, $site_ex[0]['administrators']);
+      return !empty($site_ex[0]['administrators']) && in_array($username, $site_ex[0]['administrators']);
 
     } catch (\RuntimeException $e) {
       // Suppress errors for when this is an unsupported query
