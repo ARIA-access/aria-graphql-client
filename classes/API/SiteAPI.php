@@ -315,6 +315,18 @@ END;
   public function isAdministrator(string $site_id, string $username): bool
   {
 
+    // Try optimised way first
+    try {
+      $site_ex = $this->site_ex($site_id);
+
+      // got here and we 
+      return in_array($username, $site_ex[0]['administrators']);
+
+    } catch (\RuntimeException) {
+      // Suppress errors for when this is an unsupported query
+    }
+
+    // Fall back to individual query
     $query = <<< END
       query {
           isAdministratorItems(filters: {
@@ -494,6 +506,37 @@ END;
     query {
       siteItems(
         filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        {$this->siteFields}
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['siteItems']) {
+        return $result['data']['siteItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Find extended site information for a given site
+   * 
+   * @param array $filter
+   * @return array|null
+   */
+  public function site_ex(string $site_id): ?array
+  {
+
+    $query = "
+    query {
+      site_exItems(
+        filters: " . JSONEncodedGQL::encode(['site_id' => $site_id]) . "
       ){
         {$this->siteFields}
       }
