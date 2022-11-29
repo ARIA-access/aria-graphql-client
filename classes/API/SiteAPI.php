@@ -2,6 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Fields\SiteExFields;
 use ARIA\GraphQLClient\API\Fields\SiteFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
@@ -12,6 +13,7 @@ class SiteAPI extends APIDefinition
 {
 
   use SiteFields;
+  use SiteExFields;
 
   const SITE_LOG_LEVEL_DEBUG = 'debug';
   const SITE_LOG_LEVEL_INFO = 'info';
@@ -317,7 +319,7 @@ END;
 
     // Try optimised way first
     try {
-      $site_ex = $this->site_ex($site_id);
+      $site_ex = $this->siteEx($site_id);
 
       // got here and we 
       return in_array($username, $site_ex[0]['administrators']);
@@ -530,15 +532,15 @@ END;
    * @param array $filter
    * @return array|null
    */
-  public function site_ex(string $site_id): ?array
+  public function siteEx(string $site_id): ?array
   {
 
     $query = "
     query {
-      site_exItems(
+      siteExItems(
         filters: " . JSONEncodedGQL::encode(['id' => $site_id]) . "
       ){
-        {$this->siteFields}
+        {$this->siteExFields}
       }
     }
     ";
@@ -547,8 +549,8 @@ END;
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['siteItems']) {
-        return $result['data']['siteItems'];
+      if ($result['data']['siteExItems']) {
+        return $result['data']['siteExItems'];
       }
     }
 
