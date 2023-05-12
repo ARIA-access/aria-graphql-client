@@ -25,6 +25,10 @@ class CachedClient extends Client {
 
     }
 
+    protected function getExpiry() : ? int {
+        return $this->expiry;
+    }
+
     protected function getKey( array $parameters = [] ) : string {
 
         $parameters[] = $this->getEndpoint();
