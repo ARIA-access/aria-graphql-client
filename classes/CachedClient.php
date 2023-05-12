@@ -39,7 +39,7 @@ class CachedClient extends Client {
 
     public function call(string $query, string $method = Client::METHOD_GET, string $variables = null) : ? array {
 
-        $expiry = $this->expiry;
+        $expiry = $this->getExpiry();
         $key = $this->getKey( [
             $query,
             $variables,
