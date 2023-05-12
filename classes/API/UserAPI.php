@@ -318,5 +318,38 @@ END;
 
     return [];
   }
+  
+  /**
+   * Retrieve usernames who are members of a given site.
+   *
+   * @param string $site_id
+   * @return array|null
+   */
+  public function siteMembers(string $site_id): ?array
+  {
+
+    $query = <<< END
+      query {
+        siteMembersItems(
+          filters: {
+            site_id: "$site_id"
+          }
+      ) {
+          username
+        }
+      }
+    END;
+    
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+      if (!empty($result['data']['siteMembersItems'])) {
+        return array_column($result['data']['siteMembersItems'], "username");
+      }
+    }
+
+    return null;
+  }
+
 
 }
