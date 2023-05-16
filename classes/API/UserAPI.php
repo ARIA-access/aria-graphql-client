@@ -177,6 +177,39 @@ END;
   }
 
   /**
+   * Retrieve scope
+   * 
+   * @param string $scope_id 
+   */
+  public function scope( string $scope_id): array
+  {
+    $query = <<< END
+      query {
+        scopeItems(
+          filters: {
+            id: "$scope_id"
+          }
+        ) {
+          reference,
+          name,
+          description
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['scopeItems']) {
+        return $result['data']['scopeItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
    * Retrieve scope attributes
    * Returns an array of attributes based on scope ID
    * 
