@@ -158,17 +158,20 @@ class WebhookAPI extends APIDefinition
    *
    * @param string $event The event, e.g. `visit.create`
    * @param array $context The context (i.e. the "address on the envelope") a key value pair
+   * @param array $payload The payload
    * @return array|null
    */
   public function dispatchWebhook(
     string $event,
-    array $context
+    array $context,
+    array $payload
   ): ?array {
     $mutation = "
     mutation {
       dispatchWebhook(input: {
         event: \"$event\",
-        context: " . JSONEncodedGQL::encode($context) . "
+        context: " . JSONEncodedGQL::encode($context) . ",
+        payload: " . JSONEncodedGQL::encode($payload) . "
       }){
         {$this->webhookFields}
       }
