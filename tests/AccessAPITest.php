@@ -10,7 +10,10 @@ class AccessAPITest extends \PHPUnit\Framework\TestCase {
 
     public function setUp() :void {
 
-        $this->definition = new AccessAPI( new Client( 'http://localhost:5000/graphql/' ));
+        $client = new Client( $_ENV['ENDPOINT'] );
+        $client->setToken( $_ENV['TOKEN'] );
+        $this->definition = new AccessAPI( $client );
+        
     
     }
 

@@ -12,7 +12,9 @@ class SiteAPITest extends \PHPUnit\Framework\TestCase {
 
     public function setUp() :void {
 
-        $this->definition = new SiteAPI( new Client( 'http://localhost:5000/graphql/' ));
+        $client = new Client( $_ENV['ENDPOINT'] );
+        $client->setToken( $_ENV['TOKEN'] );
+        $this->definition = new SiteAPI( $client );
     
     }
 
