@@ -218,15 +218,15 @@ class DataDepositionAPI extends APIDefinition
         createDataField(input: {
           record: "$record_id",
           type: "$type",
-          content: "$content",
-          options: "$options",
+          content: $content,
+          options: $options,
           order: $order
         }) {
             $this->fieldFields
         }
       }
   END;
-
+  
     $result = $this->getClient()->call($mutation, Client::METHOD_POST);
 
     if (!empty($result['data'])) {
