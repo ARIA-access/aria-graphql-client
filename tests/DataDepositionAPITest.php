@@ -28,6 +28,16 @@ class DataDepositionAPITest extends \PHPUnit\Framework\TestCase {
         return $bucket['id'];
     }
 
+    public function testBucket() {
+
+        $bucket_id = $this->testCreateDataBucket();
+
+        $this->assertNotEmpty($bucket_id);
+
+        $bucket = $this->definition->bucket($bucket_id);
+
+        $this->assertEquals($bucket_id, $bucket['id']);
+    }
 
     public function testCreateDataRecord() {
 
@@ -49,12 +59,22 @@ class DataDepositionAPITest extends \PHPUnit\Framework\TestCase {
         $this->assertNotEmpty($record_id);
 
         $field = $this->definition->createDataField($record_id, 'TestFieldType', ['test' => 'data']);
-var_export($field);
+
         $this->assertNotEmpty($field['id']);
         $this->assertIsArray($field['content']);
 
+        return $field;
+    }
+
+    public function testRecordFields() {
+
+        $field = $this->testCreateDataField();
+        $recordfields = $this->definition->recordFields($field['record']);
+
+        $this->assertEquals($recordfields[0]['id'], $field['id']);
     }
     
+
     
     
 }

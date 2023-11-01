@@ -116,6 +116,48 @@ class DataDepositionAPI extends APIDefinition
     return [];
   }
 
+  public function recordFields(string $record_id) {
+
+    $items = $this->fields([ 'record' => $record_id]);
+
+    if (!empty($items)) {
+      return $items;
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieve fields 
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function fields(array $filter = []) : ?array
+  {
+
+    $query = "
+    query {
+      fieldItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        ". $this->fieldFields ."
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['fieldItems']) {
+        return $result['data']['fieldItems'];
+      }
+    }
+
+    return [];
+  }
+
   /**
    * Create a bucket.
    *
