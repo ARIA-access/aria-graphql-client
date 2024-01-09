@@ -25,6 +25,7 @@ trait UserProfileFields
     orcid,
     orcid_settings,
     aria_uid,
-    timezone
+    timezone,
+    alt_emails
   ';
 }
