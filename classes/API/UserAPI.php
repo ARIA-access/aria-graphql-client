@@ -247,6 +247,46 @@ END;
   }
 
   /**
+   * Retrieve scope validations
+   * 
+   * @param string $scope_id 
+   */
+  public function scope_validation( string $scope_id, string $attribute_id = null): array
+  {
+
+    $filters['scope_id'] = $scope_id;
+    if (!empty($attribute_id)) $filters['attribute_id'] = $attribute_id;
+
+    $filters_json = JSONEncodedGQL::encode($filters);
+
+    $query = <<< END
+      query {
+        scopeItems(
+          filters: $filters_json
+        ) {
+          id
+          scope_id
+          attribute_id
+          restriction
+          description
+          value
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['scope_validationItems']) {
+        return $result['data']['scope_validationItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
    * Refresh scopes granted to a user for a specific client.
    *
    * @param string $client_id Optional client ID
@@ -305,6 +345,7 @@ END;
         }
       ) {
           is_profile_complete
+          messages
       }
     }
     
