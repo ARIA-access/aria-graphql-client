@@ -328,13 +328,19 @@ END;
    * 
    * @param array $scope_id 
    * @param string $username
+   * @param bool $show_messages 
    * 
    * @return bool
    */
-  public function isProfileComplete( array $scope_id, string $username): bool
+  public function isProfileComplete( array $scope_id, string $username, bool $show_messages = false): bool
   {
 
     $scope_id = json_encode($scope_id); 
+
+    $messages = '';
+    if ($show_messages) {
+      $messages = 'messages';
+    }
 
     $query = <<< END
       query {
@@ -345,7 +351,7 @@ END;
         }
       ) {
           is_profile_complete
-          messages
+          $messages
       }
     }
     
