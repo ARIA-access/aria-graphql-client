@@ -2,6 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Exceptions\ProfileValidationException;
 use ARIA\GraphQLClient\API\Fields\GroupFields;
 use ARIA\GraphQLClient\API\Fields\GroupMembershipFields;
 use ARIA\GraphQLClient\API\Fields\UserProfileFields;
@@ -363,6 +364,12 @@ END;
 
       if ($result['data']['isProfileCompleteItems'][0]['is_profile_complete'] === true) {
         return true;
+      }
+
+      if ($show_messages) {
+        
+        throw new ProfileValidationException($result['data']['isProfileCompleteItems'][0]['messages'] ? $result['data']['isProfileCompleteItems'][0]['messages'] : "User profile is incomplete");
+        
       }
     }
 
