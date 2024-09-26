@@ -377,6 +377,49 @@ END;
   }
 
   /**
+   * Is the user profile completed for a bundle of attributes
+   * Returns an array of attributes based on array ofscopes
+   * 
+   * @param array $scope_id 
+   * @param string $username
+   * 
+   * @return array
+   */
+  public function isProfileCompleteDetail( array $scope_id, string $username): bool
+  {
+
+    $scope_id = json_encode($scope_id); 
+
+    $query = <<< END
+      query {
+        isProfileCompleteDetailItems(
+          filters: {
+            username: "$username"
+            scope_id: $scope_id
+        }
+      ) {
+        username
+        scope_id
+        attribute
+        complete
+      }
+    }
+    
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['isProfileCompleteDetail']) {
+        return $result['data']['isProfileCompleteDetail'];
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Update User
    * Returns an array of scopes based on site_id
    * 
