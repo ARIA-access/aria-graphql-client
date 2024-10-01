@@ -405,6 +405,7 @@ END;
         username
         scope_id
         attribute
+        name
         complete
       }
     }
