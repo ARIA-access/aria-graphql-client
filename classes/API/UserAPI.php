@@ -415,8 +415,8 @@ END;
 
     if (!empty($result['data'])) {
 
-      if ($result['data']['isProfileCompleteDetail']) {
-        return $result['data']['isProfileCompleteDetail'];
+      if ($result['data']['isProfileCompleteDetailItems']) {
+        return $result['data']['isProfileCompleteDetailItems'];
       }
     }
 
