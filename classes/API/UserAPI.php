@@ -325,7 +325,7 @@ END;
 
   /**
    * Is the user profile completed for a bundle of attributes
-   * Returns an array of attributes based on array ofscopes
+   * Returns an array of attributes based on array of scopes
    * 
    * @param array $scope_id 
    * @param string $username
@@ -337,6 +337,10 @@ END;
   {
 
     $scope_id = json_encode($scope_id); 
+
+    if (!is_array(json_decode($scope_id))) {
+      throw new \RuntimeException("The scopes must be provided in a flattened array with normal indices. Dump: ".var_export($scope_id, true));
+    }
 
     $messages = '';
     if ($show_messages) {
