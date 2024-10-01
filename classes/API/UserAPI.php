@@ -389,7 +389,7 @@ END;
    * 
    * @return array
    */
-  public function isProfileCompleteDetail( array $scope_id, string $username): bool
+  public function isProfileCompleteDetail( array $scope_id, string $username): array|false
   {
 
     $scope_id = json_encode($scope_id); 
