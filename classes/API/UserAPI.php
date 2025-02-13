@@ -252,7 +252,7 @@ END;
    * 
    * @param string $scope_id 
    */
-  public function scope_validation( string $scope_id, string $attribute_id = null): array
+  public function scope_validation( string $scope_id, ?string $attribute_id = null): array
   {
 
     $filters['scope_id'] = $scope_id;
@@ -293,7 +293,7 @@ END;
    * @param string $client_id Optional client ID
    * @return boolean
    */
-  public function refreshScopes( string $client_id = null ) : bool 
+  public function refreshScopes( ?string $client_id = null ) : bool 
   {
 
     $client = "";

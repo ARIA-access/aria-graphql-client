@@ -66,7 +66,7 @@ class AccessTokenAwareCachedClient extends CachedClient
      * @param $header Optional header to return.
      * @return array|string The specific header interested in, or the whole header array of not present
      */
-    public function headers(string $header = null)
+    public function headers(?string $header = null)
     {
 
         $headers = [];

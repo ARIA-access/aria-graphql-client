@@ -280,7 +280,7 @@ END;
    * @param string $username optional name
    * @return boolean
    */
-  public function leave(string $site_id, string $username = null): bool
+  public function leave(string $site_id, ?string $username = null): bool
   {
 
     $mutation = <<< END
@@ -426,7 +426,7 @@ END;
    * @param string $site_id 
    * @param string $username
    */
-  public function siteAdministrator(string $site_id = null, string $username = null): array
+  public function siteAdministrator(?string $site_id = null, ?string $username = null): array
   {
 
     $filter = [];
