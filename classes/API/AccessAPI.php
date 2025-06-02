@@ -2,12 +2,15 @@
 
 namespace ARIA\GraphQLClient\API;
 
+use ARIA\GraphQLClient\API\Fields\VisitFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
 
 class AccessAPI extends APIDefinition
 {
+
+  use VisitFields;
 
   /**
    * Does the currently authenticated user (as defined by your authentication token) have access to view
@@ -142,5 +145,34 @@ END;
     }
 
     return null;
+  }
+
+  /**
+   * Retrieve a visit by its visit ID
+   */
+  public function visit(int $visit_id) {
+
+    $query = <<< END
+      query {
+        visitItems(
+          filters: {
+            id: "$visit_id"
+          }
+        ) {
+          $this->visitFields
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['visitItems']) {
+        return $result['data']['visitItems'];
+      }
+    }
+
+    return [];
   }
 }
