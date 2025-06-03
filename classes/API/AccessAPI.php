@@ -156,7 +156,7 @@ END;
       query {
         visitItems(
           filters: {
-            id: "$visit_id"
+            id: $visit_id
           }
         ) {
           $this->visitFields
