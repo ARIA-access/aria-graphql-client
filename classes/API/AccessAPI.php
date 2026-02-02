@@ -2,7 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
-use ARIA\GraphQLClient\API\Fields\VisitFields;
+use ARIA\GraphQLClient\API\Fields\{VisitFields,ProposalFields};
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -11,6 +11,7 @@ class AccessAPI extends APIDefinition
 {
 
   use VisitFields;
+  use ProposalFields;
 
   /**
    * Does the currently authenticated user (as defined by your authentication token) have access to view
@@ -170,6 +171,35 @@ END;
 
       if ($result['data']['visitItems']) {
         return $result['data']['visitItems'];
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Retrieve a proposal by its proposal ID
+   */
+  public function proposal(int $proposal_id) {
+
+    $query = <<< END
+      query {
+        proposalItems(
+          filters: {
+            id: $proposal_id
+          }
+        ) {
+          $this->proposalFields
+        }
+      }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['proposalItems']) {
+        return $result['data']['proposalItems'];
       }
     }
 
