@@ -23,4 +23,17 @@ trait VisitFields
     proposal_id,
     call_id
   ';
+
+    private $proposalFields = '
+    id,
+    status,
+    submitted,
+    confirmed,
+    approved,
+    completed,
+    title,
+    username,
+    moderator, 
+    action
+  ';
 }

@@ -2,7 +2,7 @@
 
 namespace ARIA\GraphQLClient\API;
 
-use ARIA\GraphQLClient\API\Fields\{VisitFields,ProposalFields};
+use ARIA\GraphQLClient\API\Fields\VisitFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
@@ -11,7 +11,6 @@ class AccessAPI extends APIDefinition
 {
 
   use VisitFields;
-  use ProposalFields;
 
   /**
    * Does the currently authenticated user (as defined by your authentication token) have access to view
@@ -180,19 +179,23 @@ END;
   /**
    * Retrieve a proposal by its proposal ID
    */
-  public function proposal(int $proposal_id) {
+  public function proposal(string $username, string $status) {
+
+
 
     $query = <<< END
       query {
         proposalItems(
           filters: {
-            id: $proposal_id
+            username: "$username",
+            status: "$status"
           }
         ) {
           $this->proposalFields
         }
       }
 END;
+
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
@@ -205,4 +208,79 @@ END;
 
     return [];
   }
+  
+  /**
+   * Fetch visit items using dynamic GraphQL filters.
+   *
+   * The method accepts an associative array of filters where:
+   * - The key must match a field defined in $visitFields
+   * - The value is the value to filter by
+   *
+   * Only valid, non-empty filters are included in the GraphQL query.
+   * If no valid filters are provided, an empty array is returned.
+   *
+   * Example:
+   *   visitItems(['proposal_id' => 28])
+   *   visitItems(['id' => 21, 'status' => 'AWAITING_EVALUATION'])
+   *
+   * @param array<string, mixed> $filters
+   *   Associative array of visit field => value pairs
+   *
+   * @return array
+   *   List of visit items matching the provided filters
+   */
+  public function visitItems(array $filters = [])
+  {
+      // Allowed filter keys are the fields in $visitFields
+      $allowedFields = array_map('trim', explode(',', str_replace(["\n", "\r"], '', $this->visitFields)));
+
+      $graphqlFilters = [];
+
+      // Loop through user filters
+      foreach ($filters as $field => $value) {
+          // Skip if field is not allowed
+          if (!in_array($field, $allowedFields, true)) {
+              continue;
+          }
+
+          // Skip empty values
+          if ($value === null || $value === '') {
+              continue;
+          }
+
+          // Decide how to format the value
+          if (is_int($value) || is_float($value)) {
+              $graphqlFilters[] = "$field: $value";
+          } else {
+              // Escape quotes for GraphQL strings
+              $escaped = addslashes($value);
+              $graphqlFilters[] = "$field: \"$escaped\"";
+          }
+      }
+
+      // Return empty array if no valid filters
+      if (empty($graphqlFilters)) {
+          return [];
+      }
+
+      // Build GraphQL query
+      $filtersString = implode("\n", $graphqlFilters);
+
+      $query = <<<END
+      query {
+          visitItems(
+              filters: {
+                  $filtersString
+              }
+          ) {
+              $this->visitFields
+          }
+      }
+  END;
+
+      $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+      return $result['data']['visitItems'] ?? [];
+  }
+
 }
