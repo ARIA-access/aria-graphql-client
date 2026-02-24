@@ -177,36 +177,68 @@ END;
   }
 
   /**
-   * Retrieve a proposal by its proposal ID
+   * Retrieve proposals
+   *
+   *
+   * @param array<string, mixed> $filters
+   * @return array
    */
-  public function proposal(string $username, string $status) {
+  public function proposalItems(array $filters = [])
+  {
+      // Allowed filter keys are the fields in $proposalFields
+      $allowedFields = array_map(
+          'trim',
+          explode(',', str_replace(["\n", "\r"], '', $this->proposalFields))
+      );
 
+      $graphqlFilters = [];
 
+      foreach ($filters as $field => $value) {
 
-    $query = <<< END
-      query {
-        proposalItems(
-          filters: {
-            username: "$username",
-            status: "$status"
+          // Skip invalid fields
+          if (!in_array($field, $allowedFields, true)) {
+              continue;
           }
-        ) {
-          $this->proposalFields
-        }
+
+          // Skip empty values
+          if ($value === null || $value === '') {
+              continue;
+          }
+
+          // Format values
+          // Requires numbers without quotes and strings with quotes
+          if (is_int($value) || is_float($value)) { // If numeric (e.g. proposal_id: 28)
+              $graphqlFilters[] = "$field: $value";
+          } else {
+              $escaped = addslashes($value);  // Escape quotes inside strings to prevent breaking the query
+
+              $graphqlFilters[] = "$field: \"$escaped\"";  // Wrap string values in quotes (e.g. status: "SUBMITTED")
+
+          }
       }
-END;
 
-
-    $result = $this->getClient()->call($query, Client::METHOD_GET);
-
-    if (!empty($result['data'])) {
-
-      if ($result['data']['proposalItems']) {
-        return $result['data']['proposalItems'];
+      // If no valid filters, return empty array
+      if (empty($graphqlFilters)) {
+          return [];
       }
-    }
 
-    return [];
+      $filtersString = implode("\n", $graphqlFilters);
+
+      $query = <<<END
+      query {
+          proposalItems(
+              filters: {
+                  $filtersString
+              }
+          ) {
+              $this->proposalFields
+          }
+      }
+  END;
+
+      $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+      return $result['data']['proposalItems'] ?? [];
   }
   
   /**

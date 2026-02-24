@@ -21,7 +21,7 @@ class AccessAPIVisitItemsTest extends \PHPUnit\Framework\TestCase
     public function testVisitItemsByProposalId(): void
     {
         $result = $this->definition->visitItems([
-            'proposal_id' => 28
+            'proposal_id' => $_ENV['PROPOSAL_ID']
         ]);
 
         $this->assertIsArray($result);
@@ -38,7 +38,7 @@ class AccessAPIVisitItemsTest extends \PHPUnit\Framework\TestCase
     public function testVisitItemsByVisitId(): void
     {
         $result = $this->definition->visitItems([
-            'id' => 21
+            'id' => $_ENV['VISIT_ID']
         ]);
 
         $this->assertIsArray($result);
@@ -53,7 +53,7 @@ class AccessAPIVisitItemsTest extends \PHPUnit\Framework\TestCase
     public function testVisitItemsWithMultipleFilters(): void
     {
         $result = $this->definition->visitItems([
-            'proposal_id' => 28,
+            'proposal_id' =>  $_ENV['PROPOSAL_ID'],
             'status' => 'AWAITING_EVALUATION'
         ]);
 
