@@ -2,15 +2,17 @@
 
 namespace ARIA\GraphQLClient\API;
 
-use ARIA\GraphQLClient\API\Fields\VisitFields;
+use ARIA\GraphQLClient\API\Fields\AccessFields;
 use ARIA\GraphQLClient\APIDefinition;
 use ARIA\GraphQLClient\Client;
 use ARIA\GraphQLClient\CallException;
+use ARIA\GraphQLClient\JSONEncodedGQL;
+
 
 class AccessAPI extends APIDefinition
 {
 
-  use VisitFields;
+  use AccessFields;
 
   /**
    * Does the currently authenticated user (as defined by your authentication token) have access to view
@@ -177,70 +179,106 @@ END;
   }
 
   /**
-   * Retrieve proposals
-   *
-   *
-   * @param array<string, mixed> $filters
-   * @return array
+   * Retrieve a proposal by its proposal ID
    */
-  public function proposalItems(array $filters = [])
-  {
-      // Allowed filter keys are the fields in $proposalFields
-      $allowedFields = array_map(
-          'trim',
-          explode(',', str_replace(["\n", "\r"], '', $this->proposalFields))
-      );
+//   public function proposal(string $username, string $status) {
 
-      $graphqlFilters = [];
 
-      foreach ($filters as $field => $value) {
+//     $query = <<< END
+//       query {
+//         proposalItems(
+//           filters: {
+//               username: "$username",
+//               status: "$status"
+//           }
+//         ) {
+//           $this->proposalFields
+//         }
+//       }
+// END;
 
-          // Skip invalid fields
-          if (!in_array($field, $allowedFields, true)) {
-              continue;
-          }
 
-          // Skip empty values
-          if ($value === null || $value === '') {
-              continue;
-          }
+//     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
-          // Format values
-          // Requires numbers without quotes and strings with quotes
-          if (is_int($value) || is_float($value)) { // If numeric (e.g. proposal_id: 28)
-              $graphqlFilters[] = "$field: $value";
-          } else {
-              $escaped = addslashes($value);  // Escape quotes inside strings to prevent breaking the query
+//     if (!empty($result['data'])) {
 
-              $graphqlFilters[] = "$field: \"$escaped\"";  // Wrap string values in quotes (e.g. status: "SUBMITTED")
+//       if ($result['data']['proposalItems']) {
+//         return $result['data']['proposalItems'];
+//       }
+//     }
 
-          }
-      }
+//     return [];
+//   }
 
-      // If no valid filters, return empty array
-      if (empty($graphqlFilters)) {
-          return [];
-      }
+/**
+ * Fetch proposal items using dynamic GraphQL filters.
+ *
+ * Example:
+ *   proposalItems(['username' => 'abc123'])
+ *   proposalItems(['username' => 'abc123', 'status' => 'SUBMITTED'])
+ *
+ * @param array<string, mixed> $filters
+ * @return array
+ */
+public function proposalItems(array $filters = [])
+{
+    // Allowed filter keys are the fields in $proposalFields
+    $allowedFields = array_map(
+        'trim',
+        explode(',', str_replace(["\n", "\r"], '', $this->proposalFields))
+    );
 
-      $filtersString = implode("\n", $graphqlFilters);
+    $graphqlFilters = [];
 
-      $query = <<<END
-      query {
-          proposalItems(
-              filters: {
-                  $filtersString
-              }
-          ) {
-              $this->proposalFields
-          }
-      }
-  END;
+    foreach ($filters as $field => $value) {
 
-      $result = $this->getClient()->call($query, Client::METHOD_GET);
+        // Skip invalid fields
+        if (!in_array($field, $allowedFields, true)) {
+            continue;
+        }
 
-      return $result['data']['proposalItems'] ?? [];
-  }
-  
+        // Skip empty values
+        if ($value === null || $value === '') {
+            continue;
+        }
+
+        // Format values
+        // Requires numbers without quotes and strings with quotes
+        if (is_int($value) || is_float($value)) { // If numeric (e.g. proposal_id: 28)
+          
+            $graphqlFilters[] = "$field: $value";
+        } else {
+            $escaped = addslashes($value);  // Escape quotes inside strings to prevent breaking the query
+
+            $graphqlFilters[] = "$field: \"$escaped\"";  // Wrap string values in quotes (e.g. status: "SUBMITTED")
+
+        }
+    }
+
+    // If no valid filters, return empty array
+    if (empty($graphqlFilters)) {
+        return [];
+    }
+
+    $filtersString = implode("\n", $graphqlFilters);
+
+    $query = <<<END
+    query {
+        proposalItems(
+            filters: {
+                $filtersString
+            }
+        ) {
+            $this->proposalFields
+        }
+    }
+END;
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    return $result['data']['proposalItems'] ?? [];
+}
+
   /**
    * Fetch visit items using dynamic GraphQL filters.
    *
@@ -315,4 +353,96 @@ END;
       return $result['data']['visitItems'] ?? [];
   }
 
+   /**
+   * Retrieve fields 
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function facilityItems(array $filter = []) : ?array
+  {
+
+    $query = "
+    query {
+      facilityItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        ". $this->facilityFields ."
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['facilityItems']) {
+        return $result['data']['facilityItems'];
+      }
+    }
+
+    return [];
+  }
+
+   /**
+   * Retrieve access routes 
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function accessItems(array $filter = []) : ?array
+  {
+
+    $query = "
+    query {
+      accessItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        ". $this->accessFields ."
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['accessItems']) {
+        return $result['data']['accessItems'];
+      }
+    }
+
+    return [];
+  }
+
+   /**
+   * Retrieve machine items 
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function machineItems(array $filter = []) : ?array
+  {
+
+    $query = "
+    query {
+      machineItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        ". $this->machineFields ."
+      }
+    }
+    ";
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['machineItems']) {
+        return $result['data']['machineItems'];
+      }
+    }
+
+    return [];
+  }
 }
