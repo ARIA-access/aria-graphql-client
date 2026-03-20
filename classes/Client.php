@@ -103,7 +103,8 @@ class Client
       
     $response = $client->request($method, $this->endpoint, [
       'headers' => $headers,
-      'form_params' => $body
+      'form_params' => $body,
+      'timeout' => 10
     ]);
     
     $responsebody = json_decode( $response->getBody(), true );
