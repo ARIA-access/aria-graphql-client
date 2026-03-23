@@ -103,6 +103,38 @@ class DataDepositionAPI extends APIDefinition
       }
     }
     ";
+    
+
+    $result = $this->getClient()->call($query, Client::METHOD_GET);
+
+    if (!empty($result['data'])) {
+
+      if ($result['data']['recordItems']) {
+        return $result['data']['recordItems'];
+      }
+    }
+
+    return [];
+  }
+  
+  /**
+   * Retrieve records matching query
+   *
+   * @param array $filter
+   * @return array|null
+   */
+  public function getRecords(array $filter = []): ?array
+  {
+
+    $query = "
+    query {
+      recordItems(
+        filters: " . JSONEncodedGQL::encode($filter) . "
+      ){
+        ". $this->recordFields ."
+      }
+    }
+    ";
 
     $result = $this->getClient()->call($query, Client::METHOD_GET);
 
